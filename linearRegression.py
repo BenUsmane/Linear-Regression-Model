@@ -26,10 +26,10 @@ y_test_scale = torch.tensor(y_scale.transform(y_test), dtype=torch.float32)
 fig, (ax1, ax2) =  plt.subplots(1,2 , figsize=(10,4))
 
 
-def plot_data(X_train = X_train_scale,
-              X_test = X_test_scale,
-              y_train = y_train_scale,
-              y_test = y_test_scale,
+def plot_data(X_train = X_train,
+              X_test = X_test,
+              y_train = y_train,
+              y_test = y_test,
               prediction= None,
               plot = ax1
               ):
@@ -60,7 +60,7 @@ def accuracy (y_true, y_pred):
 
 
 model_1 = LinearRegression()
-loss_function = nn.L1Loss()
+loss_function = nn.MSELoss()
 opt = optim.SGD(params=model_1.parameters(), lr =0.01)
 
 epochs = 250
@@ -91,12 +91,13 @@ for epoch in arange(epochs):
 
 new_pred = model_1(X_test_scale)
 
-print(new_pred.detach().numpy())
+unscale_pred = y_scale.inverse_transform(new_pred.detach())
+
 
 
 with torch.inference_mode():
 
-  plot_data(prediction=new_pred)
+  plot_data(prediction=unscale_pred)
   ax2.plot(numb_epoch, test_loss_val)
   ax2.plot(numb_epoch, train_loss_val)
   ax2.legend(['Test loss', 'Train loss'])
