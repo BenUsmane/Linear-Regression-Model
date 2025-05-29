@@ -34,7 +34,9 @@ def plot_data(X_train = X_train,
               plot = ax1
               ):
   # ax1.figure(figsize=(8,5))
-
+  ax1.set_title("Prediction plotting")
+  ax1.set_xlabel('Years of Experience')
+  ax1.set_ylabel("Salary")
   ax1.scatter(X_train, y_train, c='g')
   ax1.scatter(X_test, y_test, c='b')
 
@@ -61,7 +63,7 @@ def accuracy (y_true, y_pred):
 
 model_1 = LinearRegression()
 loss_function = nn.MSELoss()
-opt = optim.SGD(params=model_1.parameters(), lr =0.01)
+opt = optim.Adam(params=model_1.parameters(), lr =0.01)
 
 epochs = 250
 
@@ -92,12 +94,16 @@ for epoch in arange(epochs):
 new_pred = model_1(X_test_scale)
 
 unscale_pred = y_scale.inverse_transform(new_pred.detach())
-
+print(f"train loss is {train_loss_val[-1]} and test loss is {test_loss_val[-1]}")
 
 
 with torch.inference_mode():
 
   plot_data(prediction=unscale_pred)
+
+  ax2.set_title('Train and Testing loss function')
+  ax2.set_ylabel("Loss values")
+  ax2.set_xlabel("Number of epoch")
   ax2.plot(numb_epoch, test_loss_val)
   ax2.plot(numb_epoch, train_loss_val)
   ax2.legend(['Test loss', 'Train loss'])
